@@ -30,7 +30,7 @@ export function App() {
     <UserProvider>
       <ThemeProvider theme="default" />
       <BrowserRouter>
-        <IntlProvider locale={navigator.language}>
+        <IntlProvider locale="en">
           <RoutesConfig />
         </IntlProvider>
       </BrowserRouter>

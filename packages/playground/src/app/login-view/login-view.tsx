@@ -6,35 +6,57 @@ import {
   PrimaryButton,
   Spacings
 } from '@commercetools-frontend/ui-kit';
+import useLoginView, { TFormValues } from './use-login-view';
 
 import styles from './login-view.module.css';
-import { useState } from 'react';
-import { useUser } from '../../components/user-context';
+
+const errorRenderer = (key: string) => {
+  switch (key) {
+    case 'invalidEmail':
+      return 'Invalid email address';
+    default:
+      return undefined;
+  }
+};
 
 function LoginView() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const { updateUserId } = useUser();
+  const { formConfig } = useLoginView({
+    initialValues: {
+      email: '',
+      password: ''
+    }
+  });
 
-  const handleLogin = () => {
-    updateUserId(btoa(`${email}:${password}`));
-  }
+  console.log('Form validation output:',
+    TextField.toFieldErrors<TFormValues>(formConfig.errors)
+  );
+
+  console.log({ touched: formConfig.touched });
 
   return (
-    <form className={styles.container} onSubmit={handleLogin}>
+    <form className={styles.container} onSubmit={formConfig.handleSubmit}>
       <Constraints.Horizontal max={10}>
         <Card type="raised">
           <Spacings.Stack scale="l">
             <Spacings.Stack scale="m">
               <TextField
                 title="Email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                name='email'
+                value={formConfig.values.email}
+                onChange={formConfig.handleChange}
+                onBlur={formConfig.handleBlur}
+                touched={formConfig.touched.email}
+                errors={TextField.toFieldErrors<TFormValues>(formConfig.errors).email}
+                renderError={errorRenderer}
               />
               <PasswordField
                 title="Password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                name='password'
+                value={formConfig.values.password}
+                onChange={formConfig.handleChange}
+                onBlur={formConfig.handleBlur}
+                touched={formConfig.touched.password}
+                errors={TextField.toFieldErrors<TFormValues>(formConfig.errors).password}
               />
             </Spacings.Stack>
 
