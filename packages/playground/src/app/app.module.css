@@ -1,1 +1,5 @@
-/* Your styles goes here. */
+/* App-Kit design tokens */
+:root {
+  --height-for-tab: 2px;
+  --padding-left-for-tab-as-first: 16px;
+}

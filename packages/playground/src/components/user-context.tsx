@@ -17,11 +17,11 @@ const UserContext = createContext<TUserContext>({
 });
 
 export function UserProvider({ children }: TUserProviderProps) {
-  const [userId, setUserId] = useState<string>(window.localStorage.getItem(USER_ID_KEY) || '');
+  const [userId, setUserId] = useState<string>(window.sessionStorage.getItem(USER_ID_KEY) || '');
 
   const updateUserId = useCallback((newUserId: string) => {
     setUserId(newUserId);
-    window.localStorage.setItem(USER_ID_KEY, newUserId);
+    window.sessionStorage.setItem(USER_ID_KEY, newUserId);
   }, []);
 
   return (
