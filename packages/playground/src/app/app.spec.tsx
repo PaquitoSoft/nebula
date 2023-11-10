@@ -14,12 +14,12 @@ describe('App', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should have a greeting as the title', () => {
+  it('should have the Order ID as the title', () => {
     const { getByText } = render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
     );
-    expect(getByText(/Welcome playground/gi)).toBeTruthy();
+    expect(getByText(/Order: 1332823/i)).toBeTruthy();
   });
 });

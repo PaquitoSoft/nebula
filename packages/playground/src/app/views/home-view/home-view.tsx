@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
 import {
   Card,
-  Spacings,
-  Text,
-  Stamp,
   CollapsiblePanel,
+  FlatButton,
   Grid,
   SelectField,
-  FlatButton
-} from '@commercetools-frontend/ui-kit';
-import { designTokens } from '@commercetools-uikit/design-system';
-import { TabHeader } from '@commercetools-frontend/application-components';
+  SelectInput,
+  Spacings,
+  Stamp,
+  TabHeader,
+  Text,
+} from '../../components';
 
-import { TOrder } from '../../types';
-import { loadOrder } from '../../api/orders';
+import { TOrder, TOrderOptions } from '../../../types';
+import { getOrderOptions, loadOrder } from '../../../api/orders';
+import { currentTheme } from '../../stores/theme.store';
 
 function SubtotalRow({ title, value }: { title: string; value: number; }) {
   return (
@@ -26,16 +27,19 @@ function SubtotalRow({ title, value }: { title: string; value: number; }) {
 
 function HomeView() {
   const [order, setOrder] = useState<TOrder>();
+  const [orderOptions, setOrderOptions] = useState<TOrderOptions>();
 
   useEffect(() => {
     const fetchOrder = async () => {
       const orderData = await loadOrder();
+      const orderOptionsData = await getOrderOptions();
       setOrder(orderData);
+      setOrderOptions(orderOptionsData);
     }
     fetchOrder();
   }, []);
 
-  if (!order) {
+  if (!order || !orderOptions) {
     return null;
   }
 
@@ -44,7 +48,18 @@ function HomeView() {
   return (
     <Spacings.InsetSquish scale="l">
       <Spacings.Stack scale="xl">
-        <Text.Headline as="h1">Order: {order.id}</Text.Headline>
+        <Spacings.Inline justifyContent="space-between">
+          <Text.Headline as="h1">Order: {order.id}</Text.Headline>
+          <SelectInput
+            horizontalConstraint={4}
+            value={currentTheme.value}
+            onChange={(event) => currentTheme.value = event.target.value as 'default' | 'dark'}
+            options={[
+              { value: 'default', label: 'Light theme' },
+              { value: 'dark', label: 'Dark theme' },
+            ]}
+          />
+        </Spacings.Inline>
         <Spacings.Stack scale="xs">
           <Spacings.Inline justifyContent="flex-end">
             <Spacings.Inline scale="s" alignItems="center">
@@ -65,7 +80,7 @@ function HomeView() {
       <Spacings.InsetSquish scale="l">
         <Grid
           gridTemplateColumns="1fr 1fr"
-          gridGap={designTokens.spacing70}
+          gridGap="64px"
         >
           <CollapsiblePanel
             header={<CollapsiblePanel.Header>Order summary</CollapsiblePanel.Header>}
@@ -76,15 +91,15 @@ function HomeView() {
                   title="Order workflow status"
                   placeholder="Start a workflow"
                   horizontalConstraint="scale"
-                  options={[]}
+                  options={orderOptions.workflows}
                 />
                 <SelectField
                   title="Order status"
-                  options={[]}
+                  options={orderOptions.statuses}
                 />
                 <SelectField
                   title="Payment status"
-                  options={[]}
+                  options={orderOptions.paymentStatuses}
                 />
               </Spacings.Stack>
             </div>

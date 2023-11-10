@@ -1,6 +1,6 @@
-import { useUser } from "../../components/user-context";
 import { useFormik } from "formik";
-import { TFormErrors } from "../../types";
+import { TFormErrors } from "../../../types";
+import { updateUser } from "../../stores/user.store";
 
 export type TFormValues = {
   email: string;
@@ -28,12 +28,13 @@ const validateForm = (values: Record<string, string>) => {
 }
 
 function useLoginView({ initialValues }: TUserLoginViewProps) {
-  const { updateUserId } = useUser();
   const formConfig = useFormik({
     initialValues,
     validate: validateForm,
     onSubmit: (values) => {
-      updateUserId(btoa(`${values.email}:${values.password}`));
+      updateUser({
+        id: btoa(`${values.email}:${values.password}`)
+      });
     }
   });
 

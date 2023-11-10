@@ -1,16 +1,15 @@
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { ThemeProvider } from '@commercetools-uikit/design-system';
-import { UserProvider, useUser } from '../components/user-context';
-import HomeView from './home-view/home-view';
-import LoginView from './login-view/login-view';
+import { currentTheme } from './stores/theme.store';
+import { user } from './stores/user.store';
+import { ThemeProvider } from './components';
+import HomeView from './views/home-view/home-view';
+import LoginView from './views/login-view/login-view';
 
 import './app.module.css';
 
 export function RoutesConfig() {
-  const { userId } = useUser();
-
-  if (!userId) {
+  if (!user.value) {
     return <LoginView />
   }
 
@@ -25,14 +24,14 @@ export function RoutesConfig() {
 
 export function App() {
   return (
-    <UserProvider>
-      <ThemeProvider theme="default" />
+    <>
+      <ThemeProvider theme={currentTheme.value} />
       <BrowserRouter>
         <IntlProvider locale="en">
           <RoutesConfig />
         </IntlProvider>
       </BrowserRouter>
-    </UserProvider>
+    </>
   );
 }
 

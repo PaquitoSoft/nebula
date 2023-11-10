@@ -1,11 +1,11 @@
 import {
   Card,
   Constraints,
-  TextField,
   PasswordField,
   PrimaryButton,
-  Spacings
-} from '@commercetools-frontend/ui-kit';
+  Spacings,
+  TextField,
+} from '../../components';
 import useLoginView, { TFormValues } from './use-login-view';
 
 import styles from './login-view.module.css';
@@ -26,12 +26,6 @@ function LoginView() {
       password: ''
     }
   });
-
-  console.log('Form validation output:',
-    TextField.toFieldErrors<TFormValues>(formConfig.errors)
-  );
-
-  console.log({ touched: formConfig.touched });
 
   return (
     <form className={styles.container} onSubmit={formConfig.handleSubmit}>
